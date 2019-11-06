@@ -1,6 +1,8 @@
 package com.webonise.controller;
 
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +19,7 @@ import com.webonise.service.TodoService;
 import com.webonise.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import springfox.documentation.spring.web.json.Json;
 
 @RestController
 @RequestMapping("/todos")
@@ -64,9 +67,16 @@ public class TodoController {
 	}
 	
 	@ApiOperation(value = "Get User by their username")
-	@GetMapping("/getUserByUsername/{username}")
-	public User getUSer(@PathVariable("username") String username) throws Exception {
-		return userService.findByUsername(username);
+	@PostMapping("/getUser")
+	public String getUser(@RequestBody Map<String, String> json) throws Exception {
+		User user = userService.findByUsername(json.get("username"));
+		if (user == null) {
+			return "RegisterFirst";
+		} else if(user.getPassword().equals(json.get("password"))){
+			return "Valid";
+		} else {
+			return "WrongPassword";
+		}
 	}
 	
 	@ApiOperation(value = "Get the max id for next user to be inserted")

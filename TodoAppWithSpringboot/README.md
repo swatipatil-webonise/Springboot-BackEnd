@@ -34,6 +34,7 @@ b) Open the project in STS tool.
 c) Download lombok.jar
 d) Build path and add downloaded lombok.jar and it as external jar file
 e) Right click on project run that as springboot app
+f) Open http://localhost:8080/h2-console to see your database status
 
 To make api calls you can use postman: 
 1) Download postman app and open that and make api call's by 
