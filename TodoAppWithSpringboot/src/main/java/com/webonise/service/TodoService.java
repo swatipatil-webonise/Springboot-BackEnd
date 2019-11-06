@@ -1,64 +1,63 @@
 package com.webonise.service;
 
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.webonise.dao.TodoDao;
+import com.webonise.exception.EmptyTodoListFoundException;
+import com.webonise.exception.TodoByGivenIdNotExistException;
+import com.webonise.exception.TodoNotInitializedException;
+import com.webonise.exception.TodosNotExistsException;
 import com.webonise.model.Todo;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
-@Slf4j
 public class TodoService {
 
 	@Autowired
 	private TodoDao todoDao;
 
-	public List<Todo> findAll() throws Exception {
-		try {
-			return (List<Todo>) todoDao.findAll();
-		} catch (NullPointerException ex) {
-			log.info("Todos are not selected");
-			throw new NullPointerException("Todo list is not initialized properly.");
-		} catch (Exception ex) {
-			log.info("Exception occured while selecting all todos from database.");
-			throw new Exception("FindAll was unable to excute.", ex);
+	private Logger log = LoggerFactory.getLogger(TodoService.class);
+	
+	public List<Todo> findAll() {
+		List<Todo> todoList = todoDao.findAll();
+		if(todoList == null) {
+			log.error("Uninitialized todolist found.");
+			throw new TodosNotExistsException(); 
+		} else if (todoList.isEmpty()) {
+			log.error("Empty todolist found.");
+			throw new EmptyTodoListFoundException();
+		} 
+		return todoList;		
+	}
+
+	public Todo save(Todo todo) {
+		if(todo == null) {
+			log.error("Requested todo not initilized.");
+			throw new TodoNotInitializedException();
+		} else {
+			return todoDao.save(todo);
 		}
 	}
 
-	public void save(Todo todo) throws Exception {
-		try {
-			todoDao.save(todo);
-		} catch (Exception ex) {
-			log.info("Exception occured while inserting todo into database.");
-			throw new Exception("Save is unable to execute.", ex);
-		}
+	public Todo findById(int id) {
+		Todo todo = todoDao.findById(id).orElse(null);
+		if(todo == null) {
+			log.error("Requested todo by id not exists.");
+			throw new TodoByGivenIdNotExistException();
+		} 
+		return todo;
 	}
 
-	public Todo findById(int id) throws Exception  {
-		try {
-			return todoDao.findById(id).orElse(null);
-		} catch (Exception ex) {
-			log.info("Exception occured while selecting single todo from database.");
-			throw new Exception("FindById was unable to execute.", ex);
+	public Todo deleteById(int id) {
+		Todo todo = todoDao.findById(id).orElse(null);
+		if(todo == null) {
+			log.error("Requested todo by id not exists.");
+			throw new TodoByGivenIdNotExistException();
+		} else {
+			todoDao.delete(todo);
 		}
-	}
-
-	public void deleteById(int id) throws Exception {
-		try {
-			todoDao.deleteById(id);
-		} catch (Exception ex) {
-			log.info("Exception occured while deleting todo from database.");
-			throw new Exception("DeleteById was unable to execute.", ex);
-		}
-	}
-
-	public int getMax() throws Exception   {
-		try {
-			return (int) todoDao.count();
-		} catch (Exception ex) {
-			log.info("Exception occured while getting total count from todo table.");
-			throw new Exception("Check the total number of records in todo table.", ex);
-		}
+		return todo;
 	}
 }

@@ -10,10 +10,9 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.webonise</groupId>
-	<artifactId>SPWeb</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>SpringBootJPA</name>
-	<description>Demo project for Spring Boot</description>
+	<artifactId>spring-boot-todo-app</artifactId>
+	<version>1.0.1</version>
+	<name>SpringBootTodoApp</name>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -51,7 +50,6 @@
 			<version>2.6.1</version>
 			<scope>compile</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>

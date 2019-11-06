@@ -31,10 +31,7 @@ d) Database : H2 (In memory database)
 To run this project :
 a) Extract the zip in STS's workspace.
 b) Open the project in STS tool.
-c) Download lombok.jar
-d) Build path and add downloaded lombok.jar and it as external jar file
-e) Right click on project run that as springboot app
-f) Open http://localhost:8080/h2-console to see your database status
+c) Right click on project run that as springboot app.
 
 To make api calls you can use postman: 
 1) Download postman app and open that and make api call's by 
@@ -45,7 +42,7 @@ To make api calls you can use postman:
 	e) Select text type as application/json
 
 2) By Using swagger
-	a) Got to http://localhost:8080/swagger-ui.html#/
+	a) Open http://localhost:8080/swagger-ui.html#/
 	b) Execute api call by adding proper information.
 	
 3) By using Any front end app which provides UI for api calls of todoapp.

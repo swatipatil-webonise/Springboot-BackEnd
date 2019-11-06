@@ -6,5 +6,5 @@ import com.webonise.model.Todo;
 
 @Repository
 public interface TodoDao extends JpaRepository<Todo, Integer>{
-
+	
 }
