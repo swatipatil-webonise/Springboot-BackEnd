@@ -13,6 +13,8 @@ public class Todo implements Serializable{
 	private int id;
 	private String desc;
 	
+	public Todo() {}
+	
 	public Todo(int id, String desc) {
 		this.id = id;
 		this.desc = desc;

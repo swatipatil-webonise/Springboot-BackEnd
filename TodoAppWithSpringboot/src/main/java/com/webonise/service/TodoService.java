@@ -41,10 +41,9 @@ public class TodoService {
 		}
 	}
 
-	public boolean deleteTodo(int id) {
+	public int deleteTodo(int id) {
 		if(todoDao.findById(id).orElse(null) != null) {
-			todoDao.deleteById(id);
-			return true;
+			return todoDao.deleteTodoById(id);
 		} else {
 			log.error("Requested todo with id {} not found.", id);
 			throw new NotFoundException("Requested todo by id not found.");

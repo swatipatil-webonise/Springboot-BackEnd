@@ -45,7 +45,7 @@ public class TodoController {
 	
 	@ApiOperation(value = "Delete todo by it's id")
 	@DeleteMapping("/{id}")
-	public boolean deleteTodo(@PathVariable int id) {
+	public int deleteTodo(@PathVariable int id) {
 		return todoService.deleteTodo(id);
 	}
 }
