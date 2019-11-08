@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.webonise.model.Todo;
 import com.webonise.service.TodoService;
@@ -17,40 +18,34 @@ import io.swagger.annotations.ApiOperation;
 
 @RestController
 @Api(value="Todo-Management-System")
-@CrossOrigin(origins = {"http://localhost:8080","http://localhost:3000"})
+@CrossOrigin
+@RequestMapping("/todojobs")
 public class TodoController {
 	
 	@Autowired
 	private TodoService todoService;
 	
 	@ApiOperation(value = "View a list of available todos")
-	@GetMapping(path = "/todos")
+	@GetMapping("/")
 	public List<Todo> getAllTodos() {
-		return todoService.findAll();
-	}
-	
-	@ApiOperation(value = "Get todo by his/her id")
-	@GetMapping("/todos/{id}")
-	public Todo getTodo(@PathVariable("id") int id) {
-		return todoService.findById(id);
+		return todoService.getAllTodos();
 	}
 	
 	@ApiOperation(value = "Add new todo")
-	@PostMapping("/todos")
+	@PostMapping("/")
 	public Todo addTodo(@RequestBody Todo todo) {
-		return todoService.save(todo);
+		return todoService.addTodo(todo);
 	}
 	
 	@ApiOperation(value = "Update existing todo")
-	@PutMapping("/todos")
+	@PutMapping("/")
 	public Todo updateTodo(@RequestBody Todo todo) {
-		todoService.deleteById(todo.getId());
-		return todoService.save(todo);
+		return todoService.updateTodo(todo);
 	}
 	
-	@ApiOperation(value = "Delete todo by his/her id")
-	@DeleteMapping("/todos/{id}")
-	public Todo deleteTodo(@PathVariable int id) {
-		return todoService.deleteById(id);
+	@ApiOperation(value = "Delete todo by it's id")
+	@DeleteMapping("/{id}")
+	public boolean deleteTodo(@PathVariable int id) {
+		return todoService.deleteTodo(id);
 	}
 }

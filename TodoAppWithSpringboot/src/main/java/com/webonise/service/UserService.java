@@ -6,45 +6,39 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.webonise.dao.UserDao;
 import com.webonise.exception.EmailAlreadyExistException;
-import com.webonise.exception.UserNotInitializedException;
+import com.webonise.exception.NotFoundException;
 import com.webonise.exception.UsernameAlreadyExistException;
-import com.webonise.exception.UsernameNotInitializedException;
+import com.webonise.model.LoginCredential;
 import com.webonise.model.User;
 
 @Service
 public class UserService {
-	
+
 	@Autowired
 	private UserDao userDao;
-	
+
 	private Logger log = LoggerFactory.getLogger(UserService.class);
-	
-	public User findByUsername(String username) {
-		if (username == null) {
-			log.error("Username not initialized.");
-			throw new UsernameNotInitializedException();
-		} 
-		User user = userDao.findByUsername(username);
-		if (user == null) {
-			log.error("User by given username not exists.");
+
+	public Boolean isValidUser(LoginCredential credentials) {
+		if (userDao.existsById(credentials.getUsername())) {
+			if(userDao.findByUsername(credentials.getUsername()).getPassword().equals(credentials.getPassword())) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			log.error("User with username {} not found.", credentials.getUsername());
+			throw new NotFoundException("User with given username not found.");
 		}
-		return user;
-	}
-	
-	public User getUser() {
-		return new User((int)userDao.count() + 1);
-	}
-	
+	}	
+
 	public User addUser(User user) {
-		if(user == null) {
-			log.error("User not initilized.");
-			throw new UserNotInitializedException();
-		} else if (userDao.findByUsername(user.getUsername()) != null) {
-			log.error("Username already exists.");
-			throw new UsernameAlreadyExistException();
-		} else if (userDao.findByEmail(user.getEmail()) != null ) {
-			log.error("Email id alredy exists.");
-			throw new EmailAlreadyExistException();
+		if (userDao.existsById(user.getUsername())) {
+			log.error("Username : {} already exists.", user.getUsername());
+			throw new UsernameAlreadyExistException("Username already exist.");
+		} else if (userDao.findByEmail(user.getEmail()) != null) {
+			log.error("Email id : {} alredy exists.", user.getEmail());
+			throw new EmailAlreadyExistException("Email already exist.");
 		} else {
 			return userDao.save(user);
 		}

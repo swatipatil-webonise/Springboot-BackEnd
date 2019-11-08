@@ -10,9 +10,8 @@ public class User implements Serializable {
 		
 	private static final long serialVersionUID = 1L;
 	
-	@Id
-	private int id;
 	private String name;
+	@Id
 	@Column(unique = true) private String username;
 	private String password;
 	@Column(unique = true) private String email;
@@ -21,18 +20,6 @@ public class User implements Serializable {
 		
 	}
 	
-	public User(int id) {
-		super();
-		this.id = id;
-	}
-	
-	public int getId() {
-		return id;
-	}
-	
-	public void setId(int id) {
-		this.id = id;
-	}
 	public String getName() {
 		return name;
 	}
@@ -68,10 +55,10 @@ public class User implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", name=" + name + ", username=" + username + ", password=" + password + ", email="
-				+ email + "]";
+		return "User [name=" + name + ", username=" + username + ", password=" + password + ", email=" + email + "]";
 	}
+	
 }

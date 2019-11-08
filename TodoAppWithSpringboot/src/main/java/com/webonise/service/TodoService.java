@@ -6,10 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.webonise.dao.TodoDao;
-import com.webonise.exception.EmptyTodoListFoundException;
-import com.webonise.exception.TodoByGivenIdNotExistException;
-import com.webonise.exception.TodoNotInitializedException;
-import com.webonise.exception.TodosNotExistsException;
+import com.webonise.exception.EmptyFoundException;
+import com.webonise.exception.NotFoundException;
 import com.webonise.model.Todo;
 
 @Service
@@ -20,44 +18,36 @@ public class TodoService {
 
 	private Logger log = LoggerFactory.getLogger(TodoService.class);
 	
-	public List<Todo> findAll() {
+	public List<Todo> getAllTodos() {
 		List<Todo> todoList = todoDao.findAll();
-		if(todoList == null) {
-			log.error("Uninitialized todolist found.");
-			throw new TodosNotExistsException(); 
-		} else if (todoList.isEmpty()) {
+		if(todoList != null && !todoList.isEmpty()) {
+			return todoList;
+		} else {
 			log.error("Empty todolist found.");
-			throw new EmptyTodoListFoundException();
-		} 
-		return todoList;		
+			throw new EmptyFoundException("Empty todolist found.");
+		}
 	}
 
-	public Todo save(Todo todo) {
-		if(todo == null) {
-			log.error("Requested todo not initilized.");
-			throw new TodoNotInitializedException();
+	public Todo addTodo(Todo todo) {
+		return todoDao.save(todo);
+	}
+	
+	public Todo updateTodo(Todo todo) {
+		if(todoDao.findById(todo.getId()) != null) {
+			todoDao.delete(todo);
+			return todoDao.save(todo);
 		} else {
 			return todoDao.save(todo);
 		}
 	}
 
-	public Todo findById(int id) {
-		Todo todo = todoDao.findById(id).orElse(null);
-		if(todo == null) {
-			log.error("Requested todo by id not exists.");
-			throw new TodoByGivenIdNotExistException();
-		} 
-		return todo;
-	}
-
-	public Todo deleteById(int id) {
-		Todo todo = todoDao.findById(id).orElse(null);
-		if(todo == null) {
-			log.error("Requested todo by id not exists.");
-			throw new TodoByGivenIdNotExistException();
+	public boolean deleteTodo(int id) {
+		if(todoDao.findById(id).orElse(null) != null) {
+			todoDao.deleteById(id);
+			return true;
 		} else {
-			todoDao.delete(todo);
-		}
-		return todo;
+			log.error("Requested todo with id {} not found.", id);
+			throw new NotFoundException("Requested todo by id not found.");
+		} 		
 	}
 }
