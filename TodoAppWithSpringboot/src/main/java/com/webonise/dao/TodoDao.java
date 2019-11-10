@@ -8,10 +8,10 @@ import org.springframework.stereotype.Repository;
 import com.webonise.model.Todo;
 
 @Repository
-public interface TodoDao extends JpaRepository<Todo, Integer>{
-	
+public interface TodoDao extends JpaRepository<Todo, Integer> {
+
 	@Modifying
-    @Transactional
-    @Query("delete from Todo where id = ?1")
-    public int deleteTodoById(int id);
+	@Transactional
+	@Query("delete from Todo where id = ?1")
+	public int deleteTodoById(int id);
 }

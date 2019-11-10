@@ -17,32 +17,32 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@Api(value="Todo-Management-System")
+@Api(value = "Todo-Management-System")
 @CrossOrigin
 @RequestMapping("/todojobs")
 public class TodoController {
-	
+
 	@Autowired
 	private TodoService todoService;
-	
+
 	@ApiOperation(value = "View a list of available todos")
 	@GetMapping("/")
 	public List<Todo> getAllTodos() {
 		return todoService.getAllTodos();
 	}
-	
+
 	@ApiOperation(value = "Add new todo")
 	@PostMapping("/")
 	public Todo addTodo(@RequestBody Todo todo) {
 		return todoService.addTodo(todo);
 	}
-	
+
 	@ApiOperation(value = "Update existing todo")
 	@PutMapping("/")
 	public Todo updateTodo(@RequestBody Todo todo) {
 		return todoService.updateTodo(todo);
 	}
-	
+
 	@ApiOperation(value = "Delete todo by it's id")
 	@DeleteMapping("/{id}")
 	public int deleteTodo(@PathVariable int id) {

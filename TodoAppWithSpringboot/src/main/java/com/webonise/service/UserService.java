@@ -8,7 +8,6 @@ import com.webonise.dao.UserDao;
 import com.webonise.exception.EmailAlreadyExistException;
 import com.webonise.exception.NotFoundException;
 import com.webonise.exception.UsernameAlreadyExistException;
-import com.webonise.model.LoginCredential;
 import com.webonise.model.User;
 
 @Service
@@ -19,21 +18,17 @@ public class UserService {
 
 	private Logger log = LoggerFactory.getLogger(UserService.class);
 
-	public Boolean isValidUser(LoginCredential credentials) {
-		if (userDao.existsById(credentials.getUsername())) {
-			if(userDao.findByUsername(credentials.getUsername()).getPassword().equals(credentials.getPassword())) {
-				return true;
-			} else {
-				return false;
-			}
+	public User findByUsername(String username) {
+		if (userDao.exists(username)) {
+			return userDao.findByUsername(username);
 		} else {
-			log.error("User with username {} not found.", credentials.getUsername());
-			throw new NotFoundException("User with given username not found.");
+			log.error("USer with username {} not found", username);
+			throw new NotFoundException("User not found.");
 		}
-	}	
+	}
 
 	public User addUser(User user) {
-		if (userDao.existsById(user.getUsername())) {
+		if (userDao.exists(user.getUsername())) {
 			log.error("Username : {} already exists.", user.getUsername());
 			throw new UsernameAlreadyExistException("Username already exist.");
 		} else if (userDao.findByEmail(user.getEmail()) != null) {

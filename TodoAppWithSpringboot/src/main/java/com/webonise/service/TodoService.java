@@ -17,10 +17,10 @@ public class TodoService {
 	private TodoDao todoDao;
 
 	private Logger log = LoggerFactory.getLogger(TodoService.class);
-	
+
 	public List<Todo> getAllTodos() {
 		List<Todo> todoList = todoDao.findAll();
-		if(todoList != null && !todoList.isEmpty()) {
+		if (todoList != null && !todoList.isEmpty()) {
 			return todoList;
 		} else {
 			log.error("Empty todolist found.");
@@ -31,9 +31,9 @@ public class TodoService {
 	public Todo addTodo(Todo todo) {
 		return todoDao.save(todo);
 	}
-	
+
 	public Todo updateTodo(Todo todo) {
-		if(todoDao.findById(todo.getId()) != null) {
+		if (todoDao.findOne(todo.getId()) != null) {
 			todoDao.delete(todo);
 			return todoDao.save(todo);
 		} else {
@@ -42,11 +42,11 @@ public class TodoService {
 	}
 
 	public int deleteTodo(int id) {
-		if(todoDao.findById(id).orElse(null) != null) {
+		if (todoDao.findOne(id) != null) {
 			return todoDao.deleteTodoById(id);
 		} else {
 			log.error("Requested todo with id {} not found.", id);
 			throw new NotFoundException("Requested todo by id not found.");
-		} 		
+		}
 	}
 }
