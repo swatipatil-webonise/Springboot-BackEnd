@@ -13,22 +13,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.webonise.model.Todo;
 import com.webonise.service.TodoService;
+import com.webonise.service.impl.TodoServiceImpl;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
 @Api(value = "Todo-Management-System")
-@CrossOrigin
-@RequestMapping("/todojobs")
+@CrossOrigin(allowedHeaders = "*", origins = ("*"))
+@RequestMapping(path = "/todojobs", consumes = {"application/json"})
 public class TodoController {
 
 	@Autowired
 	private TodoService todoService;
-
+	
 	@ApiOperation(value = "View a list of available todos")
 	@GetMapping("/")
 	public List<Todo> getAllTodos() {
-		return todoService.getAllTodos();
+		List<Todo> todoList = todoService.getAllTodos();
+		return todoList;
 	}
 
 	@ApiOperation(value = "Add new todo")

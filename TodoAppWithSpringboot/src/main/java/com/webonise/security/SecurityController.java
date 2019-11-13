@@ -26,7 +26,7 @@ public class SecurityController {
 	@Autowired
 	private JwtUtil jwtTokenUtil;
 
-	@PostMapping("/authenticate")
+	@PostMapping(path = "/authenticate" )
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest)
 			throws Exception {
 		try {
@@ -36,9 +36,7 @@ public class SecurityController {
 			throw new IncorrectUsernameOrPasswordException("Incorrect username or password found.");
 		}
 		final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-
 		final String jwt = jwtTokenUtil.generateToken(userDetails);
-
 		return ResponseEntity.ok(new AuthenticationResponse(jwt));
 	}
 }

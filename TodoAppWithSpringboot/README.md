@@ -29,9 +29,7 @@ c) SpringBoot (2.0)
 d) Database : H2 (In memory database)
 
 To run this project :
-a) Extract the zip in STS's workspace.
-b) Open the project in STS tool.
-c) Right click on project run that as springboot app.
+a) Checkout to repository and execute command : mvn springboot-run
 
 To make api calls you can use postman: 
 1) Download postman app and open that and make api call's by 

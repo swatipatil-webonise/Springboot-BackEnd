@@ -3,16 +3,19 @@ package com.webonise.security;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.internal.Function;
 import org.springframework.security.core.userdetails.UserDetails;
+import com.webonise.TodoAppProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 public class JwtUtil {
 
-	private String SECRET_KRY = "secret";
-
+	@Autowired
+	private TodoAppProperties properties;
+		
 	public String extractUsername(String token) {
 		return extractClaim(token, Claims::getSubject);
 	}
@@ -27,7 +30,7 @@ public class JwtUtil {
 	}
 
 	private Claims extractAllClaims(String token) {
-		return Jwts.parser().setSigningKey(SECRET_KRY).parseClaimsJws(token).getBody();
+		return Jwts.parser().setSigningKey(properties.getSigningKey()).parseClaimsJws(token).getBody();
 	}
 
 	private Boolean isTokenExpired(String token) {
@@ -42,7 +45,7 @@ public class JwtUtil {
 	private String createToken(Map<String, Object> claims, String subjet) {
 		return Jwts.builder().setClaims(claims).setSubject(subjet).setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
-				.signWith(SignatureAlgorithm.HS256, SECRET_KRY).compact();
+				.signWith(SignatureAlgorithm.HS256, properties.getSigningKey()).compact();
 	}
 
 	public Boolean validateToken(String token, UserDetails userDetails) {
