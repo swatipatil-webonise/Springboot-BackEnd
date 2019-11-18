@@ -1,4 +1,3 @@
-
 insert into todo values(1,'Learn OOPS');
 insert into todo values(2,'Learn Git');
 insert into todo values(3,'Learn Agile Model');

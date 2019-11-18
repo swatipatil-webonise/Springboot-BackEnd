@@ -37,5 +37,4 @@ public class TodoAppExceptionController {
 	public ResponseEntity<Object> incorrectUsernameOrPasswordException(IncorrectUsernameOrPasswordException ex) {
 		return new ResponseEntity<>("Incorrect username or password found.", HttpStatus.NOT_ACCEPTABLE);
 	}
-	
 }

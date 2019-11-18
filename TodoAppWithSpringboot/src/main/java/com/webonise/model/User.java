@@ -62,5 +62,4 @@ public class User implements Serializable {
 	public String toString() {
 		return "User [name=" + name + ", username=" + username + ", password=" + password + ", email=" + email + "]";
 	}
-
 }
