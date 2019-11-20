@@ -15,26 +15,26 @@ public class TodoAppExceptionController {
 
 	@ExceptionHandler(value = NotFoundException.class)
 	public ResponseEntity<Object> notFoundException(NotFoundException ex) {
-		return new ResponseEntity<>("Data not found.", HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(value = EmptyFoundException.class)
 	public ResponseEntity<Object> emptyFoundException(EmptyFoundException ex) {
-		return new ResponseEntity<>("Empty data found.", HttpStatus.NO_CONTENT);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 	@ExceptionHandler(value = EmailAlreadyExistException.class)
 	public ResponseEntity<Object> emailAlreadyExistException(EmailAlreadyExistException ex) {
-		return new ResponseEntity<>("Email already exist.", HttpStatus.NOT_ACCEPTABLE);
+		return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 	}
 
 	@ExceptionHandler(value = UsernameAlreadyExistException.class)
 	public ResponseEntity<Object> usernameAlreadyExistException(UsernameAlreadyExistException ex) {
-		return new ResponseEntity<>("Username already exist.", HttpStatus.CONFLICT);
+		return new ResponseEntity<>(HttpStatus.CONFLICT);
 	}
 
 	@ExceptionHandler(value = IncorrectUsernameOrPasswordException.class)
 	public ResponseEntity<Object> incorrectUsernameOrPasswordException(IncorrectUsernameOrPasswordException ex) {
-		return new ResponseEntity<>("Incorrect username or password found.", HttpStatus.NOT_ACCEPTABLE);
+		return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 	}
 }

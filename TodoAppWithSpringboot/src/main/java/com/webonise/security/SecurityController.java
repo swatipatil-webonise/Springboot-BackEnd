@@ -26,7 +26,7 @@ public class SecurityController {
 	@Autowired
 	private JwtUtil jwtTokenUtil;
 
-	@PostMapping(path = "/authenticate" )
+	@PostMapping(path = "/authenticate")
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest)
 			throws Exception {
 		try {

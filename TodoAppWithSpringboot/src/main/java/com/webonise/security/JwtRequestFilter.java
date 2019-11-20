@@ -1,7 +1,6 @@
 package com.webonise.security;
 
 import java.io.IOException;
-
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -25,15 +24,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 	@Autowired
 	private JwtUtil jwtUtil;
-	
+
 	private Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
- 
+
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		
+
 		String username = null, jwt = null, authenticationHeader = request.getHeader("Authorization");
-		if((request.getRequestURL().toString().matches("(.*)/todojobs/[0-9](.*)") || request.getRequestURL().toString().matches("(.*)/todojobs/(.*)")) && request.getHeader("Authorization") == null && !request.getMethod().contains("OPTIONS")) {
+		if ((request.getRequestURL().toString().matches("(.*)/todojobs/[0-9](.*)")
+				|| request.getRequestURL().toString().matches("(.*)/todojobs/(.*)"))
+				&& request.getHeader("Authorization") == null && !request.getMethod().contains("OPTIONS")) {
 			log.error("Unauthorized user found.");
 			return;
 		}

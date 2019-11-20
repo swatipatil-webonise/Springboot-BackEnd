@@ -34,12 +34,11 @@ public class TodoServiceImpl implements TodoService{
 		return todoDao.save(todo);
 	}
 
-	public Todo updateTodo(Todo todo) {
-		if (todoDao.findOne(todo.getId()) != null) {
-			todoDao.delete(todo);
-			return todoDao.save(todo);
+	public Todo updateTodo(int id, String desc) {
+		if (todoDao.updateTodo(id, desc) != 0) {
+			return todoDao.findOne(id);
 		} else {
-			return todoDao.save(todo);
+			 return todoDao.save(new Todo(id, desc));
 		}
 	}
 
@@ -50,5 +49,5 @@ public class TodoServiceImpl implements TodoService{
 			log.error("Requested todo with id {} not found.", id);
 			throw new NotFoundException("Requested todo by id not found.");
 		}
-	}
+	}	
 }

@@ -16,7 +16,6 @@ mvnw
 mvnw.cmd
 help.md
 /.mvn
-.gitignore
 
 ### IntelliJ IDEA ###
 .idea

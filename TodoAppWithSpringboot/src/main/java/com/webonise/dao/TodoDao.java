@@ -14,4 +14,9 @@ public interface TodoDao extends JpaRepository<Todo, Integer> {
 	@Transactional
 	@Query("delete from Todo where id = ?1")
 	public int deleteTodoById(int id);
+	
+	@Modifying
+	@Transactional
+	@Query("update Todo todo set todo.desc=:desc where todo.id=:id")
+	public int updateTodo(int id, String desc);
 }
