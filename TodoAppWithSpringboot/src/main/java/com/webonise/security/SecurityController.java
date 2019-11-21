@@ -31,8 +31,8 @@ public class SecurityController {
 		try {
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
 					authenticationRequest.getUsername(), authenticationRequest.getPassword()));
-			final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-			final String jwt = jwtTokenUtil.generateToken(userDetails);
+			UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+			String jwt = jwtTokenUtil.generateToken(userDetails);
 			return ResponseEntity.ok(new AuthenticationResponse(jwt));
 			
 		} catch (BadCredentialsException ex) {
