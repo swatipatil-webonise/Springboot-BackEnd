@@ -3,18 +3,26 @@ package com.webonise.security;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.internal.Function;
 import org.springframework.security.core.userdetails.UserDetails;
 import com.webonise.TodoAppProperties;
+import com.webonise.exception.ExpiredJwtFoundExcpetion;
+import com.webonise.exception.InvalidTokenFoundException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 public class JwtUtil {
 
 	@Autowired
 	private TodoAppProperties properties;
+	
+	private Logger log = LoggerFactory.getLogger(JwtUtil.class);
 		
 	public String extractUsername(String token) {
 		return extractClaim(token, Claims::getSubject);
@@ -30,7 +38,17 @@ public class JwtUtil {
 	}
 
 	private Claims extractAllClaims(String token) {
-		return Jwts.parser().setSigningKey(properties.getSigningKey()).parseClaimsJws(token).getBody();
+		Claims claims = null;
+		try {
+			claims = Jwts.parser().setSigningKey(properties.getSigningKey()).parseClaimsJws(token).getBody();
+		} catch (MalformedJwtException ex) {
+			log.error("Invalid token found.");
+			throw new InvalidTokenFoundException("Invalid token found.");
+		} catch (ExpiredJwtException ex) {
+			log.error("Expired jwt found");
+			throw new ExpiredJwtFoundExcpetion("Expired jwt found.");
+		}
+		return claims;
 	}
 
 	private Boolean isTokenExpired(String token) {

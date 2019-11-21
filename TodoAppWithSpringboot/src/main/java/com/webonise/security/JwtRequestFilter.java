@@ -14,6 +14,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.webonise.exception.UnauthorizedUserFoundException;
 import com.webonise.service.impl.UserServiceImpl;
 
 @Component
@@ -25,32 +27,31 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 	@Autowired
 	private JwtUtil jwtUtil;
 
-	private Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
+	private Logger log = LoggerFactory.getLogger(JwtRequestFilter.class);
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 
-		String username = null, jwt = null, authenticationHeader = request.getHeader("Authorization");
-		if ((request.getRequestURL().toString().matches("(.*)/todojobs/[0-9](.*)")
-				|| request.getRequestURL().toString().matches("(.*)/todojobs/(.*)"))
-				&& request.getHeader("Authorization") == null && !request.getMethod().contains("OPTIONS")) {
-			log.error("Unauthorized user found.");
-			return;
-		}
-		if (authenticationHeader != null && authenticationHeader.startsWith("Bearer ")) {
-			jwt = authenticationHeader.substring(7);
-			username = jwtUtil.extractUsername(jwt);
-		}
-		if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-			UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-			if (jwtUtil.validateToken(jwt, userDetails)) {
-				UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails, null,
-						userDetails.getAuthorities());
-				token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-				SecurityContextHolder.getContext().setAuthentication(token);
+		String authenticationHeader = request.getHeader("Authorization");
+		if ((request.getRequestURL().toString().matches("(.*)/todojobs/[0-9](.*)") || request.getRequestURL().toString().matches("(.*)/todojobs/(.*)")) && authenticationHeader == null && !request.getMethod().contains("OPTIONS")) {
+				log.error("Unauthorized user found.");
+				throw new UnauthorizedUserFoundException("Unauthorized user found.");
+		} else {
+			if (authenticationHeader != null && authenticationHeader.startsWith("Bearer ")) {
+				final int JWT_TOKEN_START = 7;
+				String jwt = authenticationHeader.substring(JWT_TOKEN_START), username = jwtUtil.extractUsername(jwt);
+				if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+					UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+					if (jwtUtil.validateToken(jwt, userDetails)) {
+						UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails,
+								null, userDetails.getAuthorities());
+						token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+						SecurityContextHolder.getContext().setAuthentication(token);
+					}
+				}
 			}
+			filterChain.doFilter(request, response);
 		}
-		filterChain.doFilter(request, response);
 	}
 }
