@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import com.webonise.model.Todo;
@@ -13,6 +14,7 @@ import com.webonise.service.impl.UserServiceImpl;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@WebMvcTest
 public class SpringBootJpaApplicationTests {
 
 	@Autowired
