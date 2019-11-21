@@ -2,6 +2,7 @@
 package com.webonise.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class TodoServiceImpl implements TodoService{
 
 	public List<Todo> getAllTodos() {
 		List<Todo> todoList = todoDao.findAll();
-		if (todoList != null && !todoList.isEmpty()) {
+		if (Optional.ofNullable(todoList).isPresent()) {
 			return todoList;
 		} else {
 			log.error("Empty todolist found.");
@@ -35,7 +36,8 @@ public class TodoServiceImpl implements TodoService{
 	}
 
 	public Todo updateTodo(int id, String desc) {
-		if (todoDao.updateTodo(id, desc) != 0) {
+		final int RECORD_NOT_UPDATED = 0;
+		if (todoDao.updateTodo(id, desc) != RECORD_NOT_UPDATED) {
 			return todoDao.findOne(id);
 		} else {
 			 return todoDao.save(new Todo(id, desc));
@@ -43,7 +45,7 @@ public class TodoServiceImpl implements TodoService{
 	}
 
 	public int deleteTodo(int id) {
-		if (todoDao.findOne(id) != null) {
+		if (Optional.ofNullable(todoDao.findOne(id)).isPresent()) {
 			return todoDao.deleteTodoById(id);
 		} else {
 			log.error("Requested todo with id {} not found.", id);

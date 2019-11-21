@@ -14,9 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import com.webonise.exception.UnauthorizedUserFoundException;
-import com.webonise.service.impl.UserServiceImpl;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -34,7 +32,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 
 		String authenticationHeader = request.getHeader("Authorization");
-		if ((request.getRequestURL().toString().matches("(.*)/todojobs/[0-9](.*)") || request.getRequestURL().toString().matches("(.*)/todojobs/(.*)")) && authenticationHeader == null && !request.getMethod().contains("OPTIONS")) {
+		if ((request.getRequestURL().toString().matches("(.*)/todo-jobs/[0-9](.*)") || request.getRequestURL().toString().matches("(.*)/todo-jobs/(.*)")) && authenticationHeader == null && !request.getMethod().contains("OPTIONS")) {
 				log.error("Unauthorized user found.");
 				throw new UnauthorizedUserFoundException("Unauthorized user found.");
 		} else {
