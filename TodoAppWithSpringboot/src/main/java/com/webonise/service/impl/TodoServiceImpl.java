@@ -68,7 +68,7 @@ public class TodoServiceImpl implements TodoService{
 
 	@Override
 	public Page<Todo> getTodos(int pageNumber) {
-		Pageable pageable = new PageRequest(pageNumber, pageSize, new Sort(new Sort.Order(Direction.ASC, "desc"))) ;
+		Pageable pageable = new PageRequest(pageNumber, pageSize, new Sort(new Sort.Order(Direction.ASC, "id"))) ;
 		Page<Todo> page = todoDao.findAll(pageable);
 		if (page.hasContent()) {
 			return page;
