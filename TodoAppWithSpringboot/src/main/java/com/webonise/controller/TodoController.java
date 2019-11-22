@@ -30,15 +30,13 @@ public class TodoController {
 	@ApiOperation(value = "View list of available todos")
 	@GetMapping("/")
 	public List<Todo> getTodos() {
-		List<Todo> todoList = todoService.getAllTodos();
-		return todoList;
+		return todoService.getAllTodos();
 	}
 	
 	@ApiOperation(value = "View page of todos")
 	@GetMapping("/{pageNumber}")
 	public Page<Todo> getTodos(@PathVariable int pageNumber) {
-		Page<Todo> todoList = todoService.getTodos(pageNumber);
-		return todoList;
+		return todoService.getTodos(pageNumber);
 	}
 
 	@ApiOperation(value = "Add new todo")

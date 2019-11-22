@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import com.webonise.dao.TodoDao;
 import com.webonise.exception.EmptyFoundException;
@@ -25,7 +27,7 @@ public class TodoServiceImpl implements TodoService{
 
 	private Logger log = LoggerFactory.getLogger(TodoServiceImpl.class);
 
-	@Value("${todos.pageSize}")
+	@Value("${todos.page.size}")
 	private int pageSize;
 
 	@Override
@@ -66,7 +68,7 @@ public class TodoServiceImpl implements TodoService{
 
 	@Override
 	public Page<Todo> getTodos(int pageNumber) {
-		Pageable pageable = new PageRequest(pageNumber, pageSize) ;
+		Pageable pageable = new PageRequest(pageNumber, pageSize, new Sort(new Sort.Order(Direction.ASC, "desc"))) ;
 		Page<Todo> page = todoDao.findAll(pageable);
 		if (page.hasContent()) {
 			return page;

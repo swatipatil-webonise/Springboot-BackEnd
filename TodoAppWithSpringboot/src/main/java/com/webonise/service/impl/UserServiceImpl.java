@@ -17,6 +17,7 @@ public class UserServiceImpl implements UserService{
 
 	private Logger log = LoggerFactory.getLogger(UserService.class);
 
+	@Override
 	public User findByUsername(String username) {
 		if (userDao.exists(username)) {
 			return userDao.findByUsername(username);
@@ -26,6 +27,7 @@ public class UserServiceImpl implements UserService{
 		}
 	}
 
+	@Override
 	public User addUser(User user) {
 		if (userDao.exists(user.getUsername())) {
 			log.error("Username : {} already exists.", user.getUsername());
