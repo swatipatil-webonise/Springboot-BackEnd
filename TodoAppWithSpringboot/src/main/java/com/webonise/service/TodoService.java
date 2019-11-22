@@ -1,6 +1,9 @@
 package com.webonise.service;
 
 import java.util.List;
+
+import org.springframework.data.domain.Page;
+
 import com.webonise.model.Todo;
 
 public interface TodoService {
@@ -32,4 +35,11 @@ public interface TodoService {
 	 * @return 1 if todo gets deleted else 0.  
 	 */
 	public int deleteTodo(int id);
+	
+	/**
+	 * This method returns a page containing todos starts at the given page number.
+	 * @param pageNumber
+	 * @return Page<Todo>
+	 */
+	public Page<Todo> getTodos(int pageNumber);
 }

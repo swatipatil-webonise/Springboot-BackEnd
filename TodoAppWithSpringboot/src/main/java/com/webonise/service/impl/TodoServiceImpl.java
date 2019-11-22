@@ -6,6 +6,10 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.webonise.dao.TodoDao;
 import com.webonise.exception.EmptyFoundException;
@@ -21,8 +25,12 @@ public class TodoServiceImpl implements TodoService{
 
 	private Logger log = LoggerFactory.getLogger(TodoServiceImpl.class);
 
+	@Value("${todos.pageSize}")
+	private int pageSize;
+
+	@Override
 	public List<Todo> getAllTodos() {
-		List<Todo> todoList = todoDao.findAll();
+		List<Todo> todoList = (List<Todo>) todoDao.findAll();
 		if (Optional.ofNullable(todoList).isPresent()) {
 			return todoList;
 		} else {
@@ -31,10 +39,12 @@ public class TodoServiceImpl implements TodoService{
 		}
 	}
 
+	@Override
 	public Todo addTodo(Todo todo) {
 		return todoDao.save(todo);
 	}
 
+	@Override
 	public Todo updateTodo(int id, String desc) {
 		final int RECORD_NOT_UPDATED = 0;
 		if (todoDao.updateTodo(id, desc) != RECORD_NOT_UPDATED) {
@@ -44,6 +54,7 @@ public class TodoServiceImpl implements TodoService{
 		}
 	}
 
+	@Override
 	public int deleteTodo(int id) {
 		if (Optional.ofNullable(todoDao.findOne(id)).isPresent()) {
 			return todoDao.deleteTodoById(id);
@@ -51,5 +62,17 @@ public class TodoServiceImpl implements TodoService{
 			log.error("Requested todo with id {} not found.", id);
 			throw new NotFoundException("Requested todo by id not found.");
 		}
+	}
+
+	@Override
+	public Page<Todo> getTodos(int pageNumber) {
+		Pageable pageable = new PageRequest(pageNumber, pageSize) ;
+		Page<Todo> page = todoDao.findAll(pageable);
+		if (page.hasContent()) {
+			return page;
+		} else {
+			log.error("Empty page with page number {} found.", pageNumber);
+			throw new EmptyFoundException("Empty page found.");
+		}		
 	}	
 }

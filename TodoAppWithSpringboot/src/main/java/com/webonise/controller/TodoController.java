@@ -2,6 +2,7 @@ package com.webonise.controller;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,10 +27,17 @@ public class TodoController {
 	@Autowired
 	private TodoService todoService;
 	
-	@ApiOperation(value = "View a list of available todos")
+	@ApiOperation(value = "View list of available todos")
 	@GetMapping("/")
-	public List<Todo> getAllTodos() {
+	public List<Todo> getTodos() {
 		List<Todo> todoList = todoService.getAllTodos();
+		return todoList;
+	}
+	
+	@ApiOperation(value = "View page of todos")
+	@GetMapping("/{pageNumber}")
+	public Page<Todo> getTodos(@PathVariable int pageNumber) {
+		Page<Todo> todoList = todoService.getTodos(pageNumber);
 		return todoList;
 	}
 

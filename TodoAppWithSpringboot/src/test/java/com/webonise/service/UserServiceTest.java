@@ -16,29 +16,30 @@ import com.webonise.model.User;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceTest {
-	
+
 	@InjectMocks
 	private UserService userService;
-	
+
 	@Mock
 	private UserDao userDao;
-		
+
 	@Before
-    public void init() {
-        MockitoAnnotations.initMocks(this);
-    }
-	
+	public void init() {
+		MockitoAnnotations.initMocks(this);
+	}
+
 	@Test
 	public void testFindByUsername(String username) {
-		when(userDao.findByUsername("swati")).thenReturn(new com.webonise.model.User("Swati", "swati", "swati", "swati@gmail.com"));
+		when(userDao.findByUsername("swati"))
+				.thenReturn(new com.webonise.model.User("Swati", "swati", "swati", "swati@gmail.com"));
 		com.webonise.model.User user = userService.findByUsername("swati");
 		assertEquals("Swati", user.getName());
 		assertEquals("swati", user.getUsername());
 		assertEquals("swati", user.getPassword());
 		assertEquals("swati@gmail.com", user.getEmail());
 	}
-	
-	@Test 
+
+	@Test
 	public void testAddUser() {
 		User user = new User("Mohan", "mohan", "mohan", "mohan@gmail.com");
 		userService.addUser(user);
