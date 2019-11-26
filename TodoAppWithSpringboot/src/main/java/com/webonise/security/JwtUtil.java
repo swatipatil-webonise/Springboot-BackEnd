@@ -5,10 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cglib.core.internal.Function;
 import org.springframework.security.core.userdetails.UserDetails;
-import com.webonise.TodoAppProperties;
 import com.webonise.exception.ExpiredJwtFoundExcpetion;
 import com.webonise.exception.InvalidTokenFoundException;
 import io.jsonwebtoken.Claims;
@@ -18,10 +17,10 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 public class JwtUtil {
-
-	@Autowired
-	private TodoAppProperties properties;
 	
+	@Value("${secret.key}")
+	private String SECRET_KEY;
+
 	private Logger log = LoggerFactory.getLogger(JwtUtil.class);
 		
 	public String extractUsername(String token) {
@@ -40,7 +39,7 @@ public class JwtUtil {
 	private Claims extractAllClaims(String token) {
 		Claims claims = null;
 		try {
-			claims = Jwts.parser().setSigningKey(properties.getSigningKey()).parseClaimsJws(token).getBody();
+			claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
 		} catch (MalformedJwtException ex) {
 			log.error("Invalid token found.");
 			throw new InvalidTokenFoundException("Invalid token found.");
@@ -63,7 +62,7 @@ public class JwtUtil {
 	private String createToken(Map<String, Object> claims, String subjet) {
 		return Jwts.builder().setClaims(claims).setSubject(subjet).setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
-				.signWith(SignatureAlgorithm.HS256, properties.getSigningKey()).compact();
+				.signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
 	}
 
 	public Boolean validateToken(String token, UserDetails userDetails) {
