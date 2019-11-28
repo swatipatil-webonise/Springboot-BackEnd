@@ -7,38 +7,36 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.webonise.model.User;
+import com.webonise.security.WebConfig;
 import com.webonise.service.UserService;
+import com.webonise.service.impl.UserServiceImpl;
+import org.springframework.web.context.WebApplicationContext;
 
-@RunWith(SpringRunner.class)
-@WebMvcTest(UserController.class)
 public class UserControllerTest {
 
-	@InjectMocks
 	private MockMvc mockMvc;
 
-	@InjectMocks
-	private UserService userService;
-
 	@Before
-	public void init() {
-		MockitoAnnotations.initMocks(this);
+	public void setup() {
+		this.mockMvc = MockMvcBuilders.standaloneSetup(new UserController()).build();
 	}
 	
 	@Test
 	public void testAddUser() throws Exception {
-		when(userService.addUser(new User("Ajit", "ajit", "ajit", "ajit@gmail.com")))
-				.thenReturn(new User("Ajit", "ajit", "ajit", "ajit@gmail.com"));
-		mockMvc.perform(post("/register")).andExpect(status().isOk())
-				.andExpect((ResultMatcher) content().contentType(MediaType.APPLICATION_JSON_VALUE))
-				.andExpect((ResultMatcher) jsonPath("$.name", "Ajit"));
+		User user = new User("Swati", "swati", "swati", "swati@gmail.com");
+		this.mockMvc.perform(post("/register").requestAttr("user", user)).andExpect(status().isOk());
+				//.andExpect(status().isOk());
+//				.andExpect((ResultMatcher) content().contentType(MediaType.APPLICATION_JSON_VALUE))
+//				.andExpect((ResultMatcher) jsonPath("$.name", "Ajit"));
 	}
 }

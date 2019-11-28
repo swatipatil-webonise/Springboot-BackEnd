@@ -1,20 +1,16 @@
 package com.webonise.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
 import com.webonise.dao.UserDao;
 import com.webonise.model.User;
+import com.webonise.service.impl.UserServiceImpl;
 
-@RunWith(MockitoJUnitRunner.class)
 public class UserServiceTest {
 
 	@InjectMocks
@@ -23,27 +19,30 @@ public class UserServiceTest {
 	@Mock
 	private UserDao userDao;
 
+	public UserServiceTest() {
+		this.userService = new UserServiceImpl();
+	}
+
 	@Before
 	public void init() {
 		MockitoAnnotations.initMocks(this);
 	}
 
 	@Test
-	public void testFindByUsername(String username) {
-		when(userDao.findByUsername("swati"))
-				.thenReturn(new com.webonise.model.User("Swati", "swati", "swati", "swati@gmail.com"));
-		com.webonise.model.User user = userService.findByUsername("swati");
-		assertEquals("Swati", user.getName());
+	public void testFindByUsername() {
+		User user = new User("Swati", "swati", "swati", "swati@gmail.com");
+		when(userDao.exists(user.getUsername())).thenReturn(true);
+		when(userService.findByUsername(user.getUsername())).thenReturn(user);
+		assertEquals(user, userService.findByUsername(user.getUsername()));
 		assertEquals("swati", user.getUsername());
-		assertEquals("swati", user.getPassword());
-		assertEquals("swati@gmail.com", user.getEmail());
 	}
 
 	@Test
 	public void testAddUser() {
 		User user = new User("Mohan", "mohan", "mohan", "mohan@gmail.com");
-		userService.addUser(user);
-		verify(userDao, times(1)).save(user);
-		assertEquals(true, userDao.exists("mohan"));
+		when(userService.addUser(user)).thenReturn(user);
+		assertEquals(user, userService.addUser(user));
+		when(userDao.exists(user.getUsername())).thenReturn(true);
+		assertEquals(true, userDao.exists(user.getUsername()));
 	}
 }

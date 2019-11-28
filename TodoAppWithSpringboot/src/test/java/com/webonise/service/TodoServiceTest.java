@@ -2,20 +2,22 @@ package com.webonise.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import com.webonise.dao.TodoDao;
 import com.webonise.model.Todo;
+import com.webonise.service.impl.TodoServiceImpl;
 
-@RunWith(MockitoJUnitRunner.class)
 public class TodoServiceTest {
 
 	@InjectMocks
@@ -24,44 +26,56 @@ public class TodoServiceTest {
 	@Mock
 	private TodoDao todoDao;
 
+	public TodoServiceTest() {
+		this.todoService = new TodoServiceImpl();
+	}
+
 	@Before
 	public void init() {
 		MockitoAnnotations.initMocks(this);
 	}
 
 	@Test
-	public void testListAllTodos() {
-		List<Todo> list = new ArrayList<>();
-		list.add(new Todo(1, "Learn Spring Security Demo"));
-		list.add(new Todo(2, "Learn Spring Boot Demo"));
+	public void testGetAllTodos() {
+		List<Todo> list = Arrays.asList(new Todo(1, "Learn Spring Security Demo"),
+				new Todo(2, "Learn Spring Boot Demo"));
 		when(todoDao.findAll()).thenReturn(list);
-		List<Todo> todoList = todoService.getAllTodos();
-		assertEquals(2, todoDao.count());
-		assertEquals(false, todoList.isEmpty());
-		assertEquals(true, Optional.ofNullable(todoList).isPresent());
-		assertEquals(true, list.equals(todoList));
+		assertEquals(list, todoService.getAllTodos());
 	}
 
 	@Test
 	public void textAddTodo() {
-		todoService.addTodo(new Todo(1, "Learn OOPS"));
-		assertEquals(true, todoDao.exists(1));
-		assertEquals(new Todo(1, "Learn OOPS"), todoDao.findOne(1));
+		Todo todo = new Todo(1, "Learn OOPS");
+		when(todoService.addTodo(todo)).thenReturn(todo);
+		assertEquals(todo, todoService.addTodo(todo));
+		when(todoDao.findOne(1)).thenReturn(todo);
+		assertEquals(1, todoDao.findOne(1).getId());
 		assertEquals("Learn OOPS", todoDao.findOne(1).getDesc());
 	}
 
 	@Test
 	public void testUpdateTodo() {
-		todoService.updateTodo(3, "Learn ES6");
-		assertEquals(true, todoDao.exists(3));
-		assertEquals(new Todo(1, "Learn OOPS"), todoDao.findOne(1));
+		Todo todo = new Todo(3, "Learn ES6");
+		when(todoService.updateTodo(3, "Learn ES6")).thenReturn(todo);
+		when(todoDao.findOne(3)).thenReturn(todo);
+		assertEquals(todo, todoDao.findOne(3));
 		assertEquals(3, todoDao.findOne(3).getId());
+		assertEquals("Learn ES6", todoDao.findOne(3).getDesc());
 	}
 
 	@Test
 	public void testDeleteTodo() {
-		todoService.addTodo(new Todo(1, "Learn OOPS"));
-		assertEquals(1, todoService.deleteTodo(1));
-		assertEquals(0, todoService.deleteTodo(1));
+		Todo todo = new Todo(4, "Learn React JS");
+		when(todoDao.findOne(4)).thenReturn(todo);
+		when(todoDao.deleteTodoById(4)).thenReturn(1);
+		assertEquals(1, todoService.deleteTodo(4));
+	}
+
+	@Test
+	public void testGetTodos() {
+		Page<Todo> page = new PageImpl<Todo>(
+				Arrays.asList(new Todo(1, "Learn ES"), new Todo(2, "Learn JS"), new Todo(3, "Learn OOPS")));
+		when(todoDao.findAll(new PageRequest(0, 3, new Sort(new Sort.Order(Direction.ASC, "id"))))).thenReturn(page);
+		assertEquals(page, todoDao.findAll(new PageRequest(0, 3, new Sort(new Sort.Order(Direction.ASC, "id")))));
 	}
 }

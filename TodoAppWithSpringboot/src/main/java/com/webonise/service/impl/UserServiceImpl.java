@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService{
 		if (userDao.exists(username)) {
 			return userDao.findByUsername(username);
 		} else {
-			log.error("USer with username {} not found", username);
+			log.error("User with username {} not found", username);
 			throw new NotFoundException("User not found.");
 		}
 	}
